@@ -1,25 +1,46 @@
-import logo from './logo.svg';
-import './App.css';
+import React, { useState } from 'react';
 
-function App() {
+const customDictionary = {
+  teh: "the",
+  wrok: "work",
+  fot: "for",
+  exampl: "example"
+};
+
+const App = () => {
+  const [text, setText] = useState('');
+  const [suggestion, setSuggestion] = useState('');
+
+  const handleChange = (event) => {
+    const inputText = event.target.value;
+    setText(inputText);
+    checkSpelling(inputText);
+  };
+
+  const checkSpelling = (inputText) => {
+    const words = inputText.split(/\s+/); // Split by whitespace
+    for (let word of words) {
+      const lowerCaseWord = word.toLowerCase();
+      if (customDictionary[lowerCaseWord]) {
+        setSuggestion(`Did you mean: ${customDictionary[lowerCaseWord]}?`);
+        return;
+      }
+    }
+    setSuggestion(''); // Clear suggestion if no misspelling found
+  };
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div>
+      <textarea 
+        value={text}
+        onChange={handleChange}
+        placeholder="Type here..."
+        rows="10"
+        cols="50"
+      />
+      {suggestion && <div>{suggestion}</div>}
     </div>
   );
-}
+};
 
 export default App;
